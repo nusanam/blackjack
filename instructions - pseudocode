@@ -1,0 +1,1376 @@
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
+/*
+
+**Overview**
+1. Single deck game(Make it 4 decks?)
+  - number of cards: 52
+    - number of suits: 4
+      - diamonds, clubs, hearts, spades
+      - each suit has 13 cards
+        - 1 to 10, jack, queen, king
+        - value of each card
+          - 1 to 10
+          - Jack, Queen, King : 10
+2. Single player game
+  - player
+  - dealer
+3. Game ends when there are no remaining cards 
+      (or when the player wants to end it (after 2, 4, 6, 8, etc. rounds??)-I haven't incorporated this in the pseudocode yet))
+
+**Things to keep track of throughout the game**
+    - number of cards remaining in the deck and which cards (continues to subtract)
+    - number of cards in player's and dealer's hands
+    - counter for total current values that resets after each round: curValCounter
+    - counter for total rounds won per player: roundCounter
+
+**Game play**
+1. Intro
+    - welcome message with brief instructions/overview
+2. (function1) Shuffle cards
+3.a. (function2) If total number of cards in deck is greater than 4, dealer deals two cards from the top of the pile to the player
+      - unshift two cards from card deck & update total card count
+      - reveal cards to player
+      - add values of two cards to curValCounter
+3.b. (function2) If total number of cards in deck is less than 4, game over.
+      - if player's roundCounter is greater than dealer's roundCounter, player wins 
+      - if player's roundCounter is less than dealer's roundCounter, dealer wins
+      - if player's roundCounter is equal to dealer's roundCounter, it's a tie!
+4. (function3) Dealer deals two cards from the top of the pile to dealer
+    - unshift two more cards from card deck & update total card count
+    - reveal one card (at random?) to player and keep second card hidden
+    - add values of two cards to curValCounter
+5. (function5) Checks:
+      a. If value in player's hand is greater than 21, player loses round & dealer wins
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      b. If value in dealer's hand is greater than 21, dealer loses round & player wins
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      c. If value in player's hand is === 21 , player wins round 'BlackJack!' and dealer loses
+        - add one to player's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      d. If value in dealer's hand is === 21, dealer wins round 'BlackJack!' and player loses
+        - add one to dealer's roundCounter
+        - reset curValCounter for player & dealer
+        - move on to next round (repeat process from 2. onwards)
+      e. If value in player's hand is less than 21 && value in dealer's hand is less than or equal to 21, player chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., c., & e.
+        - if stand
+          - move on to dealer
+      f. If value in dealer's hand is less than 21 && value in player's hand is less than or equal to 21, dealer chooses to hit or stand
+        - if hit, check that total cards in card deck is greater than 1, then:
+          - dealer deals one more card
+          - unshift card from deck  & update total card count
+          - add card to hand
+          - add value to curValCounter
+          - perform checks: b., d., & e.
+        - if stand
+          - if value in player's hand is greater than value in dealer's hand, player wins round
+            - add one to player's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+          - if value in dealer's hand is greater than value in player's hand, dealer wins round
+            - add one to dealer's roundCounter
+            - reset curValCounter for player & dealer
+            - move on to next round (repeat process from 3. onwards)
+
+
+
+*/
