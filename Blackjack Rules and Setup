@@ -1,0 +1,130 @@
+/*
+
+To make it simple I think we should only allow for a user to play against a "house." 
+
+///////////////////////
+////Blackjack Rules////
+//////////////////////
+
+- Blackjack is a game where players are dealt cards and try to reach or get as close to 21 as is possible. If your hand of cards is equal to 21, then that's "blackjack." A jack, queen, king have a value of 10. An ace has a value of 11. All other cards have a typical number value. For example a 2 card will have a value of 2, a 4 card will have a value of 4, and etc.
+- The user will be dealt two cards face up so that the player can see the value of these cards and the House will receive one card face up (the player will get to see what this card is) and a second card face down (the player will not get to see what this card is). 
+  - After being dealt these two cards, the player will have two options: to either hit or stay. 
+    - To stay would mean the player is happy and confident with his/her set of cards. 
+    - To hit would mean the player would be dealt a random card (this is good if the player has low number cards that don't remotely add up to 21 such as a 2, 3, 4 etc).
+    - The player may STAY with the two cards originally dealt to them, or he/she can HIT for additional cards,which will be dealt one at a time, until the player decides to STAY on the total (if it is 21 or under), or goes "bust" (if the total for the player's hand of cards is over 21)
+
+Examples:
+  1) Ace + 2 card = 11 + 2 = 13 --> stay or hit 
+    So the player can choose to stay but if the house has 
+    a set of cards that adds up to between 14-21, the player will lose. 
+
+  2) Jack + queen + 2 card = 22 --> lose the game
+
+What we need to be doing:
+1 - create a deck
+2 - be able to shuffle the deck
+3 - deal hand
+4 - function to start the game (the player automatically goes first)
+5 - define a variable hand for the player and house. each time a new card is dealt to the player, it will go into this hand.
+*/
+
+//Maybe we can start with outputting some strings
+
+// we're going to push in 52 card objects into this deck of cards below inside the createDeck function, which will then be shuffled using the shuffle function 
+let deck = []
+
+function createDeck(){
+  // Use this to create a full deck
+  for (let i = 0; i < suits.length; i++) {
+    for (let j = 0; j < cardValues.length; j++) {
+      // displaying a single card's information 
+      let card = { Card: cardValues[j], Suit: suits[i] }
+      deck.push(card)
+    }
+  }
+  console.log(deck.length)
+  return deck;
+}
+
+function shuffle(){
+  // to shuffle the deck so it's randomized for different playthroughs
+  let cards = 52;
+  let L1 = 0; // this represents an element inside the deck array, which will be randomized
+  let L2 = L1+1; // this represents the next element's location inside the deck array, which will be used to randomize the location of cards
+  while (cards) {
+    // the formula below will find a random location inside the deck array to switch out with 
+    L1 = Math.floor(Math.random() * deck.length);
+    [deck[L1], deck[L2]] = [deck[L2], deck[L1]];
+    cards--
+  }
+  return deck;
+}
+
+let handPlayer = []
+let handPlayerSum = 0;
+
+let handHouse = []
+let handHouseSum = 0;
+
+function dealHands() {
+  // to deal cards to player and the house
+  
+  // use a loop to pop off the top card from the deck which will be the last element inside of our deck array
+  // we want to run the loop only TWICE so that the player gets two cards
+  let cards = 52;
+  while(cards >= 52) {
+    handPlayer.push(deck.pop())
+    cards--
+  }
+  // then we want to run another loop only TWICE so that the house gets two cards
+  while(cards >= 50) {
+    handHouse.push(deck.pop())
+    cards--
+  }
+  return handPlayer, handHouse
+  //handPlayerSum = handPlayer.reduce((acc, cur) => (acc + cur), 0); 
+  //handHouseSum = handHouse.reduce((acc, cur) => (acc + cur), 0); 
+
+  // add code to return a string that shows the two cards that the player has been dealt and only one of the two cards that the house has been dealt
+}
+
+function startGame() {
+  createDeck();
+  shuffle();
+  dealHands();
+}
+
+function hit() {
+  // this will draw a card from the top of the deck for the player by using .pop()
+  // after the card has been added to the player's hand, it will alter the handPlayerSum variable
+  handPlayer.push(//push the deck's top card into the player's hand which the player is able to see)
+  handPlayerSum = handPlayer.reduce((acc, cur) => (acc + cur), 0);
+  // add code that prints a string so that the player sees what the new card is and the total of the values now in the player's hand
+}
+
+function cardValuesCheck() {
+  // this will check to see if the players cards is > 21
+  // This function should run each time after the player decides to HIT and gets a card
+  else if (cardVal > 21) return "Your cards total is " + cardval + ". Better luck next time..."
+
+}
+
+function stay() {
+  // this will move the game on to the house to randomly pick whether it will hit or stay
+
+  // randomize whether the house hits or stays maybe look up some probability so that if the sum of two cards is greater than a certain amount, the house automatically chooses to STAY?
+  endGame()
+}
+
+function endGame() {
+  // This will return the score and check if the player or House won.
+  // if the player's cards is equal to 21 then the result is "Blackjack"
+  scorePlayer = ;
+  scoreHouse = ;
+  if (cardVal === 21) return "Blackjack! You Win!"
+  else if (cardVal < 21) 
+    if (houseVal > cardVal || houseval === 21) return "The House beat you with a total of " + scoreHouse + ". Sorry, bud."
+    if (cardVal > houseVal) return scorePlayer + " is your score. You beat the House! Free ramen for you."
+}/*
+
+To make it simple I think we should only allow for a user to play against a "house." 
