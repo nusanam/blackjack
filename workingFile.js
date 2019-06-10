@@ -29,23 +29,34 @@ function createDeck(){
   return deck;
 }
 
+// function shuffleDeck(deck){
+//   // to shuffle the deck at the start of each new game
+//   const newDeck = deck;
+//   let numCards = deck.length;
+//   let L1 = 0; // this represents an element inside the deck array, which will be randomized
+//   let L2 = L1+1; // this represents the next element's location inside the deck array, which will be used to randomize the location of cards
+//   while (numCards) {
+//     // the formula below will find a random location inside the deck array to switch out with 
+//     L1 = Math.floor(Math.random() * newDeck.length);
+//     [newDeck[L1], newDeck[L2]] = [newDeck[L2], newDeck[L1]];
+//     numCards--
+//   }
+//   return newDeck;
+// }
 
 function shuffleDeck(deck){
-  // to shuffle the deck at the start of each new game
   const newDeck = deck;
-  
-  let numCards = deck.length;
-  let L1 = 0; // this represents an element inside the deck array, which will be randomized
-  let L2 = L1+1; // this represents the next element's location inside the deck array, which will be used to randomize the location of cards
-  while (numCards) {
-    // the formula below will find a random location inside the deck array to switch out with 
-    L1 = Math.floor(Math.random() * newDeck.length);
-    [newDeck[L1], newDeck[L2]] = [newDeck[L2], newDeck[L1]];
-    numCards--
+  let n = newDeck.length, lastCard, j
+  // as long as there are cards left to be shuffled we'll run a while loop
+  while (n) {
+    // a random index will be generated as long as there are n cards to shuffle. essentially, we are removing a card at a random location, j, and moving it to be the last card for each instance of this while loop. we will never touch that last card again and the subsequent instance of this while loop is free to pick any cards that are remaining aside from the last card. so in this way, we are shuffling cards from the front and putting them in the back. this will result in a deck of cards that has a different order than the one we created using our createDeck function. 
+    j = Math.floor(Math.random() * (n--));
+    lastCard = newDeck[n]; // assigning what the lastCard is 
+    newDeck[n] = newDeck[j] // we're taking a card at random location j
+    newDeck[j] = lastCard // and placing it at the back of the deck to be the last card
   }
   return newDeck;
 }
-
 
 // console.log(shuffledDeck);
 
@@ -104,10 +115,6 @@ function determineValueOfHand(hand) {
 //console.log('testCount: ', testCount)
 
 function playerHandAndValueText(hand, value) {    
- 	const text1 = 'Player Hand: '
-  const text3 = ' Player Count: '
-  const text4 = determineValueOfHand(hand) // get value of hand
-  const text5 = '.'
 
   // pull out the card info for each card in hand
   // convert that to a string
@@ -116,56 +123,45 @@ function playerHandAndValueText(hand, value) {
   //   cardText += `${card.card} of ${card.suit}, `;
   // });
   for (let i = 0; i < hand.length; i++) {
-    cardText += `${hand[i].card} of ${hand[i].suit}, `;
+    cardText += `${hand[i].card} of ${hand[i].suit}. `;
   }
-
   // combine all these strings into one string
-  return text1 + cardText + text3 + text4 + text5;
-  
+return `
+Player Hand: ${cardText} 
+Player Count: ${determineValueOfHand(hand)}`
 }
 
 function houseHandAndValueText(hand, value) { // parameters 
-  const text1 = 'House Hand: '
-  // let text2 = hand.toString(" ");
-
   // pull out the card info for each card in hand
   // convert that to a string
-  const cardText = `${hand[0].card} of ${hand[0].suit}, Hidden Card.`;
+  const cardText = `${hand[0].card} of ${hand[0].suit}. Hidden Card`;
 
-  // combine all these strings into one string
-  return text1 + cardText;
+return `
+House Hand: ${cardText}
+House Count: Hidden`
   
 }
 
 function finalHouseHand(hand,value){
-  const text1 = 'House Hand: '
-  const text3 = ' House Count: '
-  const text4 = determineValueOfHand(hand) // get value of hand
-  const text5 = '.'
-
   // pull out the card info for each card in hand
   // convert that to a string
   let cardText = ''
-  
-  // hand.forEach((card) => {
-  //   cardText += `${card.card} of ${card.suit}, `;
-  // });
-
   for (let i = 0; i < hand.length; i++) {
-    cardText += `${hand[i].card} of ${hand[i].suit}, `;
+    cardText += `${hand[i].card} of ${hand[i].suit}. `;
   }
 
-  // combine all these strings into one string
-  return text1 + cardText + text3 + text4 + text5;
+return `
+House Hand: ${cardText} 
+House Count: ${determineValueOfHand(hand)}`
 }
 
-function hitMe(deck, hand) {
-  //Player decides to HIT
-  // deal one card to player and then update the playerCount
-  dealCard(deck, hand)  
-	// count = determineValueOfHand(hand)
-  // return count
-}
+// function hitMe(deck, hand) {
+//   //Player decides to HIT
+//   // deal one card to player and then update the playerCount
+//   dealCard(deck, hand)  
+// 	// count = determineValueOfHand(hand)
+//   // return count
+// }
 
 function houseHandCheck(houseCount, playerCount, shuffledDeck, houseHand) {
     if (houseCount > 21 || playerCount > houseCount) {
@@ -210,14 +206,18 @@ function startGame() {
   
   // this while loop runs during user's turn 
   while (response !== 'stay' && playerCount < 21) {
-    let thingToShowUser = `${playerText}, ${houseText}, Do you want to hit or stay?`;
+  let thingToShowUser = `
+    ${playerText} 
+    ${houseText}
+
+Do you want to hit or stay?`;
 
     // CHECK IF THIS WORKS IN REPL
     response = prompt(thingToShowUser);
   	
     // if user chooses to hit, then add card to hand and update count
  		if (response === 'hit') {
-    	hitMe(shuffledDeck, playerHand);
+    	dealCard(shuffledDeck, playerHand);
       
       // updates playerCount
       playerCount = determineValueOfHand(playerHand);
@@ -235,7 +235,7 @@ function startGame() {
     while(determineValueOfHand(houseHand) < 21 && determineValueOfHand(houseHand) < playerCount) {
       // changed the condition of the while loop to automatically calculate the houseCount. if the houseCount < 18, the while loop will run and deal a card to the house using the hitMe function. if the condition is false (the houseCount > 18), then we will exit the while loop, update the count for the house, update the hand for the house, and then run houseHandCheck to see who wins the game
       // note from Tim: changed the condition so that the dealer will draw additional cards as long as dealerCount is less than playerCount
-      hitMe(shuffledDeck, houseHand);
+      dealCard(shuffledDeck, houseHand);
 	  }
     houseCount = determineValueOfHand(houseHand); 
     houseText = houseHandAndValueText(houseHand, houseCount);
@@ -245,7 +245,7 @@ function startGame() {
   // after checking the conditions of the houseHandCheck, we will showcase the final hands for both player and house to the player
   houseText = finalHouseHand(houseHand);
   // display final hand
-  alert(`Final outcome: ${playerText}, ${houseText}`);
-  
+  alert(`Final outcome: ${playerText} 
+  ${houseText}`);
 }
 startGame()
