@@ -232,8 +232,9 @@ function startGame() {
       alert('You lose');
   } else { // if player is under 21, then the dealer gets cards
   // while loop runs during dealer's turn while dealer's count < player's count or until dealer's count > 21
-    while(determineValueOfHand(houseHand) < 17) {
+    while(determineValueOfHand(houseHand) < 21 && determineValueOfHand(houseHand) < playerCount) {
       // changed the condition of the while loop to automatically calculate the houseCount. if the houseCount < 18, the while loop will run and deal a card to the house using the hitMe function. if the condition is false (the houseCount > 18), then we will exit the while loop, update the count for the house, update the hand for the house, and then run houseHandCheck to see who wins the game
+      // note from Tim: changed the condition so that the dealer will draw additional cards as long as dealerCount is less than playerCount
       hitMe(shuffledDeck, houseHand);
 	  }
     houseCount = determineValueOfHand(houseHand); 
