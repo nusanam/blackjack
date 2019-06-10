@@ -10,10 +10,10 @@ Why did we choose to do this? To have fun!
 We decided to separate the code into:
   1) createDeck function
   2) shuffleDeck function
-  3a) dealCard function to deal cards 
-  3b) hitMe function to deal additional cards after the initial two
-  4) start game function that included all of the "instructional" coding for what to do to run the game
-  5) at the end of the game, we used a handCheck function to determine whether a player or the house decided to win the game
+  3) dealCard function to deal cards and a hitMe function to deal additional cards after the initial two
+  4) variables to hold a shuffled deck, player's hand, dealer's hand, and to keep track of the score of the two hands in the game
+  5) start game function that included all of the "instructional" coding for what to do to run the game
+  6) handCheck function to determine whether a player or the house wins the game based on count of the card's values
   
 Stretch features could include CSS to render cards and make the game look more polished, adding multiplayer functionality, and a table to 
 keep track of the wins and losses.
